@@ -28,14 +28,17 @@ def mark_board_when_match(board, number):
             if (current == number):
                 board[x][y] = str(number) + "X"
 
-def check_for_winner_board(boards):
+def check_for_winners(boards):
+    winners = []
     for board in boards:
         for t in range(0,5):
             current = board[t][t]
             if ("X" in str(current)):
                 result, line = is_line_fully_marked(board, t)
                 if result:
-                    return board
+                    winners.append(board)
+                    break
+    return winners
 
 def is_line_fully_marked(board, center):
     horizontal = [board[0][center], board[1][center], board[2][center], board[3][center], board[4][center]]
@@ -62,9 +65,31 @@ for num in bingo_numbers:
     for board in bingo_boards:
         mark_board_when_match(board, num)
     
-    winner_board = check_for_winner_board(bingo_boards)
-    if winner_board:
+    winner_boards = check_for_winners(bingo_boards)
+    if winner_boards:
         break
 
-score = calculate_score(winner_board)
+score = calculate_score(winner_boards[0])
 print("Score:", score * last_num)
+
+
+print("Solution 2")
+
+bingo_numbers, bingo_boards = data_setup(bingo)
+
+for num in bingo_numbers:
+    last_num = num
+    for board in bingo_boards:
+        mark_board_when_match(board, num)
+    
+    winner_boards = check_for_winners(bingo_boards)
+    if winner_boards:
+
+        if (len(bingo_boards) == 1):
+            break
+
+        for winner_board in winner_boards:
+            bingo_boards.remove(winner_board)
+
+score = calculate_score(bingo_boards[0])
+print("Last Winner Score:", score * last_num)
